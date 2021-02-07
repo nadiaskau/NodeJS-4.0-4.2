@@ -9,6 +9,8 @@ const httpStatus = require("http-status-codes");        // http sc
 const lib = require("../private/libWebUtil");           // home grown utilities
 const experimental = require("../private/myTemplater"); // highly experimental template
 const querystring = require("querystring");
+const printContacts = require("../private/contactList"); //printring JSON file to HTML
+const date = require("../private/date");                 //get current date
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 const getAndServe = async function (res, path, content) {   // asynchronous
@@ -69,8 +71,9 @@ module.exports = {
             "Content-Type": "text/html; charset=utf-8"
         });
         res.write(experimental.receipt(obj));           // home made templating for native node*/
-        
+
         let body = []; //empty array
+        data += date.currentDate(); //adding current date to querystring
         data = querystring.parse(data); //parsing querystring into key value pairs
         
         fs.readFile(filename, (err, JSONcontent) => { //Read existing file
@@ -93,5 +96,11 @@ module.exports = {
         });
 
         res.end(); 
+    },
+
+    contactList(req, res, data) {
+
+        printContacts.printContacts(res);
+
     }
 }
